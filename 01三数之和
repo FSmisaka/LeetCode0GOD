@@ -1,0 +1,44 @@
+题目：给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k 
+     同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。
+     
+     注意：答案中不可以包含重复的三元组。
+
+% 心路历程：
+  很困难的一道题。因为即使使用BF，判断三元组是否重复也很麻烦。
+  做法很经典：
+  遍历三元组中的第一个数，将问题转化为「两数之和」问题。而「两数之和」采用排序+双指针即可AC。
+·AC代码：
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        # 排序
+        nums.sort()
+        ans = []
+        l = len(nums)
+        # 遍历三元组中的第一个数
+        for i, x in enumerate(nums):
+            if x > 0:
+                break
+            # 题目要求不重复
+            if i > 0 and x == nums[i-1]:
+                continue
+            left = i + 1
+            right = l - 1
+            # 经典双指针，解决两数之和问题
+            while left < right:
+                a, b = nums[left], nums[right]
+                # 两个特判if，使三元组不重复（这个真的有点东西，得仔细想明白这个过程）
+                if left > i+1 and a == nums[left - 1]:
+                    left += 1
+                    continue
+                if right+1 < l and b == nums[right + 1]:
+                    right -= 1
+                    continue
+                if a+b < -x:
+                    left += 1
+                elif a+b > -x:
+                    right -= 1
+                else:
+                    ans.append([x, a, b])
+                    left += 1
+                    right -= 1
+        return ans
