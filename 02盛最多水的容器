@@ -1,0 +1,25 @@
+题目：
+给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+返回容器可以储存的最大水量。
+
+% 非常巧妙的双指针（由两侧向中间）
+  最重要的一点：已经取定了 left 和 right 以后（假设 left 处的高度低），不可能在 left 和 right 中间找到一个垂线和 left 组成容纳水更多的容器。
+  因此，初始left，right = 0，n-1。只需要使left和right中高度较低的指针向中间移动即可（再次解释：高度较低的指针不动，另一个指针向里，此时永远也不可能容纳更多的水）
+  （初始的两个坐标是最靠外的两个坐标，每次只有让指针向里的操作，没有向外的操作。因此不需要考虑在left和right两侧找垂线会容纳水更多还是更少的问题）
+
+·AC代码
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        ans = -1
+        n = len(height)
+        left, right = 0, n-1
+        while left < right:
+            cont = (right-left)*min(height[left],height[right])
+            if ans == -1 or ans < cont:
+                ans = cont
+            if height[left] < height[right]:
+                left += 1
+            else:
+                right -= 1
+        return ans
