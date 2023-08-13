@@ -1,0 +1,26 @@
+题目：峰值元素是指其值严格大于左右相邻值的元素。
+     给你一个整数数组 nums，找到峰值元素并返回其索引。
+     你可以假设 nums[-1] = nums[n] = -∞ 。
+     必须实现时间复杂度为 O(log n) 的算法来解决此问题。
+
+% 二分
+  不太典型的二分。因为在一般的二分中，抛弃掉的mid左侧或右侧的全部元素，它们一定与答案无关。
+  但本题中，抛弃的元素也有可能包含峰值。即抛弃了正确答案之一。
+  不过神奇的是，抛弃并不会产生任何问题，在剩下未涂色的元素中一定还有峰值，这使得这道题的二分没那么好想。
+
+看代码就懂了
+·AC代码
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        n = len(nums)
+        # right没有初始化为n-1，是因为n-1这一格无论如何一定是涂蓝色的（峰值及峰值右侧的格子涂蓝色），就不需要再讨论了
+        left, right = 0, n-2
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] < nums[mid+1]:
+                # 此时右侧未涂色的格子中一定有峰值
+                left = mid + 1
+            else:
+                # 此时mid及左侧未涂色的格子中一定有峰值
+                right = mid - 1
+        return left
